@@ -1,36 +1,35 @@
 {
+  "name": "turborepo-firebase",
+  "version": "0.0.0",
   "private": true,
-  "prisma": {
-    "schema": "packages/database/prisma/schema.prisma",
-    "seed": "tsx packages/database/src/seed.ts"
-  },
-  "scripts": {
-    "build": "turbo run build",
-    "db:migrate:deploy": "turbo run db:migrate:deploy",
-    "db:push": "turbo run db:push",
-    "db:seed": "turbo run db:seed",
-    "dev": "turbo run dev",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "generate": "turbo run generate",
-    "lint": "turbo run lint"
-  },
-  "devDependencies": {
-    "@repo/eslint-config": "*",
-    "prettier": "^3.2.5",
-    "prisma": "5.10.2",
-    "tsx": "^4.7.1",
-    "turbo": "^2.0.4"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "name": "with-prisma",
-  "dependencies": {
-    "@prisma/client": "5.10.2"
-  },
-  "packageManager": "npm@9.8.1",
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "type": "module",
+  "scripts": {
+    "start": "turbo run dev emulators",
+    "dev": "turbo run build && turbo run root:emulate dev",
+    "clean": "turbo run root:clean clean",
+    "build": "turbo run build",
+    "deploy": "turbo run deploy",
+    "lint": "pnpm format:check && turbo run lint",
+    "lint:fix": "pnpm format && turbo run lint -- --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "root:clean": "rimraf node_modules",
+    "root:emulate": "firebase emulators:start"
+  },
+  "devDependencies": {
+    "eslint-config-custom": "workspace:*",
+    "firebase-tools-with-isolate": "^13.4.0",
+    "prettier": "^3.0.0",
+    "tsconfig": "workspace:*",
+    "turbo": "^1.13.0",
+    "typescript": "^5.0.4"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "packageManager": "pnpm@8.15.5"
 }
