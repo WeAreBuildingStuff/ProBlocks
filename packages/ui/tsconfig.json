@@ -1,5 +1,23 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
   "include": ["."],
-  "exclude": ["dist", "build", "node_modules"]
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "jsx": "react",            // Ensure TypeScript understands JSX syntax
+    "module": "ESNext",        // Use ESNext for module resolution for React components
+    "target": "ES6",           // Target ES6 to use modern JavaScript features
+    "strict": true,            // Enable all strict type-checking options
+    "esModuleInterop": true,   // Allow default imports from modules with no default export
+    "skipLibCheck": true,      // Skip checking .d.ts files of libraries
+    "forceConsistentCasingInFileNames": true, // Enforce consistent casing in import paths
+    "baseUrl": ".",            // Resolve non-relative module names as relative to the base URL
+    "paths": {
+      "@components/*": ["./src/*"], // Adjust the paths as per your project structure
+      "@utils/*": ["./src/lib/*"]
+    },
+    "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
+    "resolveJsonModule": true,            // Include JSON modules in the project
+    "isolatedModules": true,              // Ensure TypeScript performs transpilation in isolated modules
+    "noEmit": true                        // Disable emitting files, suitable for pure type-checking
+  }
 }
