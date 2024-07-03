@@ -58,7 +58,7 @@ export default function LoginCard({ router }: LoginCardProps) {
   }
 
   return (
-    <Card className="w-[350px] border-none h-auto m-auto">
+    <Card className="w-[350px] h-auto m-auto">
       <CardHeader>
         <CardTitle>Log In Account</CardTitle>
       </CardHeader>
@@ -100,8 +100,7 @@ export default function LoginCard({ router }: LoginCardProps) {
             href={"../register"}
           >
             Register
-          </Link>
-        </p>
+          </Link></p>
       </div>
       <CardFooter className="flex flex-col justify-between">
         <Button id="loginButton" className="w-full bg-black" onClick={() => handleSubmit()}>
