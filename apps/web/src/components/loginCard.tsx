@@ -17,10 +17,10 @@ import isValidEmail from "../utils/isValidEmail";
 // import { login } from "../utils/authApi";
 
 interface LoginCardProps {
-  router : AppRouterInstance
+  router: AppRouterInstance
 }
 
-export default function LoginCard({ router } : LoginCardProps) {
+export default function LoginCard({ router }: LoginCardProps) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("")
   const [displayEmailInvalid, setDisplayEmailInvalid] = useState<boolean>(false)
@@ -94,13 +94,14 @@ export default function LoginCard({ router } : LoginCardProps) {
         </div>
       </CardContent>
       <div className="flex justify-center mb-2">
-        <p className="text-xs mr-1">Don't have an account? </p>
-        <Link
-          className="text-blue-700 text-xs hover:underline hover:underline-offset-1 hover:decoration-blue-700"
-          href={"../register"}
-        >
-          Register
-        </Link>
+        <p className="text-xs mr-1">Don't have an account? {" "}
+          <Link
+            className="text-blue-700 text-xs hover:underline hover:underline-offset-1 hover:decoration-blue-700 inline-block"
+            href={"../register"}
+          >
+            Register
+          </Link>
+        </p>
       </div>
       <CardFooter className="flex flex-col justify-between">
         <Button id="loginButton" className="w-full bg-black" onClick={() => handleSubmit()}>

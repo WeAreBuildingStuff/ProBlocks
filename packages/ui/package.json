@@ -10,6 +10,7 @@
   "exports": {
     "./styles.css": "./dist/index.css",
     "./src/components/*": "./src/components/*",
+    "./src/lib/*": "./src/lib/*",
     "./card": "./src/card.tsx"
   },
   "license": "MIT",
