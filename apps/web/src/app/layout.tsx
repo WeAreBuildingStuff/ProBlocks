@@ -2,8 +2,15 @@ import "./globals.css";
 import "@repo/ui/styles.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Inter as FontSans } from "next/font/google"
+import Navbar from "../components/navbar";
+import { cn } from "@repo/ui/src/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
 
 export const metadata: Metadata = {
   title: "Create Turborepo",
@@ -17,7 +24,16 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body
+        className={cn(
+          "flex flex-col min-h-screen bg-background font-sans antialiased overflow-x-hidden",
+          fontSans.variable
+        )}>
+        <Navbar />
+        <div className="flex flex-1">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
