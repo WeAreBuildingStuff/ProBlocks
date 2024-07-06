@@ -69,7 +69,7 @@ export default function SignupCard({ router } : RegisterCardProps) {
   }
 
   return (
-    <Card className="w-[350px] border-none h-auto m-auto">
+    <Card className="w-[350px] h-auto m-auto">
       <CardHeader>
         <CardTitle>Make a New Account</CardTitle>
       </CardHeader>
