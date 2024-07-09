@@ -1,5 +1,6 @@
 import { Express, Request, Response } from "express"
 import * as dotenv from "dotenv";
+import { generateResponse } from "../utils/gemini/response";
 
 dotenv.config({ path: ".env" });
 
@@ -8,6 +9,18 @@ function geminiRoutes(app: Express) {
 
   
     // res.status(200).json({ message: message});
+  });
+
+  app.post("/api/gemini/test", async (req: Request, res: Response) => {
+    try {
+      const { message } = req.body;
+
+      const response = await generateResponse(message);
+
+      res.status(201).json( {message: response} );
+    } catch {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   });
   
 }
