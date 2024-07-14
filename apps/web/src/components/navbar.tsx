@@ -14,7 +14,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="flex justify-between w-screen h-18 gap-4 bg-white border border-b-1 p-4 px-12">
+    <header className="flex justify-between w-screen h-18 gap-4 bg-white border border-b-1 py-4 px-24">
       <div className="flex gap-4 items-center">
         <Link href="/">
           <h3 className="font-bold text-xl mr-8"> ProBlocks </h3>
