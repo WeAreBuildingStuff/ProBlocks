@@ -33,9 +33,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, isButtonPressed
 
   const canvasRef = useP5(sketch);
 
-  return (
-    <div className="w-2/3 h-full gap-4 bg-white rounded-xl border-2" ref={canvasRef}></div>
-  );
-}
+  return <div className='w-2/3 h-full gap-4 bg-white rounded-xl border-2' ref={canvasRef}></div>;
+};
 
 export default DrawingCanvas;
