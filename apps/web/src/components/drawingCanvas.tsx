@@ -5,7 +5,7 @@ import { useP5 } from '../hooks/useP5';
 import { CarAnimation } from '../utils/carAnimation';
 import p5 from 'p5';
 
-type Command = 'forward' | 'backward' | 'turnLeft' | 'turnRight';
+export type Command ='forward' | 'backward' | 'turnLeft' | 'turnRight';
 
 interface DrawingCanvasProps {
   commands: Command[];
@@ -17,7 +17,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, isButtonPressed
     const carAnimation = new CarAnimation(p, commands);
 
     p.setup = () => {
-      p.createCanvas(p.windowWidth * 0.66, p.windowHeight);
+      p.createCanvas(910, 380);
     };
 
     p.draw = () => {
@@ -27,15 +27,13 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, isButtonPressed
     };
 
     p.windowResized = () => {
-      p.resizeCanvas(p.windowWidth * 0.66, p.windowHeight);
+      p.resizeCanvas(500, 200);
     };
   };
 
   const canvasRef = useP5(sketch);
 
-  return (
-    <div className="w-2/3 h-full gap-4 bg-white rounded-xl border-2" ref={canvasRef}></div>
-  );
-}
+  return <div className='w-[300px] h-[200px] bg-white rounded-xl border-2' ref={canvasRef}></div>;
+};
 
 export default DrawingCanvas;

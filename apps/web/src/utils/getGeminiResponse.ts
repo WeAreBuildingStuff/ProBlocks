@@ -1,13 +1,12 @@
-export default async function getGeminiResponse(message: string) : Promise<string> {
+export default async function getGeminiResponse(message: string): Promise<string> {
   try {
-
-    console.log("start")
+    console.log('start');
     const response = await fetch(`http://localhost:8080/api/gemini/test`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message })
     });
 
     if (!response.ok) {
@@ -20,4 +19,4 @@ export default async function getGeminiResponse(message: string) : Promise<strin
     console.error('Error fetching response:', error);
     throw error;
   }
-};
+}
