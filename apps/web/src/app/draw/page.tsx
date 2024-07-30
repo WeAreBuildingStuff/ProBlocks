@@ -1,5 +1,5 @@
 "use client"
-
+import React from "react";
 import DrawingCanvas from "../../components/drawingCanvas";
 import { Button } from "@repo/ui/src/components/button";
 import { useState } from "react";

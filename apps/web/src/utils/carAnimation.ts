@@ -28,7 +28,7 @@ export class CarAnimation {
   update(isButtonPressed: boolean) {
     if (isButtonPressed && this.currentCommandIndex < this.commands.length) {
       const currentCommand = this.commands[this.currentCommandIndex];
-      
+
       switch (currentCommand) {
         case 'forward':
           this.x += this.moveSpeed * this.p.cos(this.p.radians(this.angle));
@@ -64,9 +64,9 @@ export class CarAnimation {
     this.p.rect(0, 0, 50, 30); // Car body
     this.p.fill(0);
     this.p.ellipse(-15, 15, 10, 10); // Wheel 1
-    this.p.ellipse(15, 15, 10, 10);  // Wheel 2
+    this.p.ellipse(15, 15, 10, 10); // Wheel 2
     this.p.ellipse(-15, -15, 10, 10); // Wheel 3
-    this.p.ellipse(15, -15, 10, 10);  // Wheel 4
+    this.p.ellipse(15, -15, 10, 10); // Wheel 4
     this.p.pop();
   }
 }
