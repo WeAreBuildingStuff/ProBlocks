@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Input } from '@repo/ui/src/components/input';
 import { Button } from '@repo/ui/src/components/button';
 import getGeminiResponse from '../../utils/getGeminiResponse';

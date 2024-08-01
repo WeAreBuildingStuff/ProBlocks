@@ -1,6 +1,6 @@
 'use client';
 import SignupCard from '../../components/signupCard';
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { useRouter } from 'next/navigation';
 
 const RegisterPage: FC = () => {
