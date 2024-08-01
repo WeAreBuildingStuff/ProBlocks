@@ -33,7 +33,7 @@ const Page: React.FC = () => {
               description='Master key skills in probability and data analysis'
               status='IN PROGRESS'
             />
-            <div className='bg-gray-100 p-6 rounded-lg mt-6 px-16'>
+            <div className='bg-gray-100 py-6 rounded-lg mt-6 px-16'>
               <Carousel className='w-full p-2'>
                 <CarouselContent className='-ml-1 gap-4'>
                   {courses.map((course, index) => (
@@ -66,7 +66,7 @@ const Page: React.FC = () => {
               description='Master key skills in probability and data analysis'
               status='IN PROGRESS'
             />
-            <div className='bg-gray-100 p-6 rounded-lg mt-6 px-16'>
+            <div className='bg-gray-100 py-6 rounded-lg mt-6 px-16'>
               <Carousel className='w-full p-2'>
                 <CarouselContent className='-ml-1 gap-4'>
                   {courses.map((course, index) => (
@@ -99,7 +99,7 @@ const Page: React.FC = () => {
               description='Master key skills in probability and data analysis'
               status='IN PROGRESS'
             />
-            <div className='bg-gray-100 p-6 rounded-lg mt-6 px-16'>
+            <div className='bg-gray-100 py-6 rounded-lg mt-6 px-16'>
               <Carousel className='w-full p-2'>
                 <CarouselContent className='-ml-1 gap-4'>
                   {courses.map((course, index) => (
