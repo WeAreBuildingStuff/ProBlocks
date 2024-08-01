@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function Page(): JSX.Element {
   return (
-    <main className='w-screen flex flex-col items-center bg-neutral-100 p-24'>
+    <main className='w-screen flex flex-1 flex-col h-full items-center bg-neutral-100 p-24'>
       <BentoGrid className='mx-auto w-full'>
         {items.map((item, i) => (
           <BentoGridItem
