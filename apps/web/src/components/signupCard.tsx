@@ -1,6 +1,6 @@
 'use client';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useState } from 'react';
+// import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import React, { useState } from 'react';
 import { Button } from '@repo/ui/src/components/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/ui/src/components/card';
 import { Input } from '@repo/ui/src/components/input';
@@ -9,18 +9,18 @@ import Link from 'next/link';
 import isValidEmail from '../utils/isValidEmail';
 // import { signup } from "@/utils/authApi";
 
-interface RegisterCardProps {
-  router: AppRouterInstance;
-}
+// interface RegisterCardProps {
+//   router: AppRouterInstance;
+// }
 
-export default function SignupCard({ router }: RegisterCardProps) {
+export default function SignupCard() {
   const [username, setUserName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [displayEmailInvalid, setDisplayEmailInvalid] = useState<boolean>(false);
   const [displayEnterPassword, setDisplayEnterPassword] = useState<boolean>(false);
   const [displayEnterUsername, setDisplayEnterUsername] = useState<boolean>(false);
-  const [displayEmailInUse, setDisplayEmailInUse] = useState<boolean>(false);
+  // const [displayEmailInUse, setDisplayEmailInUse] = useState<boolean>(false);
 
   async function handleSubmit() {
     let valid = true;
@@ -95,11 +95,11 @@ export default function SignupCard({ router }: RegisterCardProps) {
                   Enter a valid email
                 </p>
               )}
-              {displayEmailInUse && (
+              {/* {displayEmailInUse && (
                 <p id='errorMessage' className='text-xs text-red-500 mr-1 my-2'>
                   Email is already in use
                 </p>
-              )}
+              )} */}
             </div>
             <div className='flex flex-col space-y-1.5'>
               <Label htmlFor='password'>Password</Label>

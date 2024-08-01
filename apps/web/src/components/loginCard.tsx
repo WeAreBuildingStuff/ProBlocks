@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useState } from 'react';
+// import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import React, { useState } from 'react';
 import { Button } from '@repo/ui/src/components/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/ui/src/components/card';
 import { Input } from '@repo/ui/src/components/input';
@@ -10,16 +10,16 @@ import Link from 'next/link';
 import isValidEmail from '../utils/isValidEmail';
 // import { login } from "../utils/authApi";
 
-interface LoginCardProps {
-  router: AppRouterInstance;
-}
+// interface LoginCardProps {
+//   router: AppRouterInstance;
+// }
 
-export default function LoginCard({ router }: LoginCardProps) {
+export default function LoginCard() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [displayEmailInvalid, setDisplayEmailInvalid] = useState<boolean>(false);
   const [displayEnterPassword, setDisplayEnterPassword] = useState<boolean>(false);
-  const [incorrectCridentials, setIncorrectCridentials] = useState<boolean>(false);
+  // const [incorrectCridentials, setIncorrectCridentials] = useState<boolean>(false);
 
   async function handleSubmit() {
     let valid = true;
@@ -92,11 +92,11 @@ export default function LoginCard({ router }: LoginCardProps) {
           </div>
         </form>
         <div className='w-full flex'>
-          {incorrectCridentials && (
+          {/* {incorrectCridentials && (
             <p id='errorMessage' className='text-xs text-red-500 mx-auto mt-2'>
               Password or username is incorrect
             </p>
-          )}
+          )} */}
         </div>
       </CardContent>
       <div className='flex justify-center mb-2'>
