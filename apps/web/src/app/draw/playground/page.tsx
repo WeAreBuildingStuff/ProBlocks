@@ -23,11 +23,9 @@ declare global {
   }
 }
 
-type Command = 'forward' | 'backward' | 'turnLeft' | 'turnRight';
-
 // Individual Command Button Component
 interface CommandButtonProps {
-  label: Command;
+  label: Command['type'];
   onClick: () => void;
 }
 
@@ -47,7 +45,7 @@ export default function Component() {
   const processedTranscripts = useRef<Set<string>>(new Set());
 
   // Command options available
-  const commandOptions: Command[] = ['forward', 'backward', 'turnLeft', 'turnRight'];
+  const commandOptions: Command['type'][] = ['forward', 'backward', 'turnLeft', 'turnRight'];
 
   const addCommand = (command: Command) => {
     setCommands([...commands, command]);
@@ -107,10 +105,27 @@ export default function Component() {
     if (transcript && !processedTranscripts.current.has(transcript)) {
       processedTranscripts.current.add(transcript);
       const words = transcript.split(' ');
-      const validCommands: Command[] = ['forward', 'backward', 'turnLeft', 'turnRight'];
-      const commands: Command[] = words.filter((word) =>
-        validCommands.includes(word as Command)
-      ) as Command[];
+      const validCommands: Command['type'][] = ['forward', 'backward', 'turnLeft', 'turnRight'];
+      const commands: Command[] = words
+        .map((word) => {
+          const [command, value] = word.split('-');
+          if (validCommands.includes(command as Command['type'])) {
+            const param = parseInt(value, 10);
+            if (!isNaN(param)) {
+              switch (command) {
+                case 'forward':
+                case 'backward':
+                  return { type: command, distance: param };
+                case 'turnLeft':
+                case 'turnRight':
+                  return { type: command, degrees: param };
+              }
+            }
+          }
+          return null;
+        })
+        .filter(Boolean) as Command[];
+
       if (commands.length > 0) {
         setTextCommands((prevCommands) => [...prevCommands, ...commands]);
         console.log('Commands added:', commands);
@@ -122,7 +137,7 @@ export default function Component() {
   console.log('Text Commands:', textCommands);
 
   return (
-    <div className='flex flex-grow h-full w-full'>
+    <div className='flex h-screen w-full'>
       <div className='flex flex-col bg-background text-foreground border-r border-muted p-4 gap-4 max-w-[300px] w-full'>
         <div className='flex items-center justify-between'>
           <h2 className='text-lg font-semibold'>Coding Playground</h2>
@@ -147,7 +162,26 @@ export default function Component() {
                   <CommandButton
                     key={command}
                     label={command}
-                    onClick={() => addCommand(command)}
+                    onClick={() => {
+                      const value = prompt(
+                        `Enter value for ${command} (distance for forward/backward, degrees for turnLeft/turnRight)`
+                      );
+                      if (value) {
+                        const param = parseInt(value, 10);
+                        if (!isNaN(param)) {
+                          switch (command) {
+                            case 'forward':
+                            case 'backward':
+                              addCommand({ type: command, distance: param });
+                              break;
+                            case 'turnLeft':
+                            case 'turnRight':
+                              addCommand({ type: command, degrees: param });
+                              break;
+                          }
+                        }
+                      }
+                    }}
                   />
                 ))}
               </div>
@@ -161,7 +195,7 @@ export default function Component() {
                     className='bg-white border border-gray-300 rounded-md p-2 cursor-pointer'
                     onClick={() => removeCommand(index)}
                   >
-                    {command}
+                    {`${command.type} ${'distance' in command ? command.distance : command.degrees}`}
                   </div>
                 ))}
               </div>

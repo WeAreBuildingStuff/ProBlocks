@@ -1,7 +1,5 @@
 import p5 from 'p5';
 
-type Command = 'forward' | 'backward' | 'turnLeft' | 'turnRight';
-
 export class CarAnimation {
   private p: p5;
   private commands: Command[];
@@ -9,9 +7,8 @@ export class CarAnimation {
   private y: number;
   private angle: number;
   private currentCommandIndex: number;
-  private frameCounter: number;
-  private moveSpeed: number;
-  private turnSpeed: number;
+  private distanceMoved: number;
+  private angleTurned: number;
 
   constructor(p: p5, commands: Command[]) {
     this.p = p;
@@ -20,37 +17,53 @@ export class CarAnimation {
     this.y = 300;
     this.angle = 0;
     this.currentCommandIndex = 0;
-    this.frameCounter = 0;
-    this.moveSpeed = 1;
-    this.turnSpeed = 1;
+    this.distanceMoved = 0;
+    this.angleTurned = 0;
   }
 
   update(isButtonPressed: boolean) {
     if (isButtonPressed && this.currentCommandIndex < this.commands.length) {
       const currentCommand = this.commands[this.currentCommandIndex];
 
-      switch (currentCommand) {
+      switch (currentCommand.type) {
         case 'forward':
-          this.x += this.moveSpeed * this.p.cos(this.p.radians(this.angle));
-          this.y += this.moveSpeed * this.p.sin(this.p.radians(this.angle));
+          if (this.distanceMoved < currentCommand.distance) {
+            this.x += this.p.cos(this.p.radians(this.angle));
+            this.y += this.p.sin(this.p.radians(this.angle));
+            this.distanceMoved++;
+          } else {
+            this.distanceMoved = 0;
+            this.currentCommandIndex++;
+          }
           break;
         case 'backward':
-          this.x -= this.moveSpeed * this.p.cos(this.p.radians(this.angle));
-          this.y -= this.moveSpeed * this.p.sin(this.p.radians(this.angle));
+          if (this.distanceMoved < currentCommand.distance) {
+            this.x -= this.p.cos(this.p.radians(this.angle));
+            this.y -= this.p.sin(this.p.radians(this.angle));
+            this.distanceMoved++;
+          } else {
+            this.distanceMoved = 0;
+            this.currentCommandIndex++;
+          }
           break;
         case 'turnLeft':
-          this.angle -= this.turnSpeed;
+          if (this.angleTurned < currentCommand.degrees) {
+            this.angle -= 1;
+            this.angleTurned++;
+          } else {
+            this.angleTurned = 0;
+            this.currentCommandIndex++;
+          }
           break;
         case 'turnRight':
-          this.angle += this.turnSpeed;
+          if (this.angleTurned < currentCommand.degrees) {
+            this.angle += 1;
+            this.angleTurned++;
+          } else {
+            this.angleTurned = 0;
+            this.currentCommandIndex++;
+          }
           break;
-      }
-
-      this.frameCounter++;
-
-      if (this.frameCounter >= 60) {
-        this.currentCommandIndex++;
-        this.frameCounter = 0;
       }
     }
   }
