@@ -245,11 +245,10 @@ export default function Component() {
           <div className='h-full w-full bg-background rounded-xl shadow-xl'>
             <DrawingCanvas
               commands={[
-                { type: 'forward', distance: 50 },
-                { type: 'turnLeft', degrees: 45 },
-                { type: 'turnRight', degrees: 40 },
-                { type: 'backward', distance: 50 },
-                { type: 'turnLeft', degrees: 85 }
+                { type: 'connect', start: 'A1', end: 'B2' },
+                { type: 'connect', start: 'B2', end: 'B6' },
+                { type: 'connect', start: 'A6', end: 'B6' },
+                { type: 'connect', start: 'C6', end: 'B6' }
               ]}
               controlCommand={controlCommand}
             />

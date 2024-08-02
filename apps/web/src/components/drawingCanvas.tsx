@@ -2,12 +2,12 @@
 
 import React, { useRef } from 'react';
 import { useP5 } from '../hooks/useP5';
-import { CarAnimation } from '../utils/carAnimation';
 import p5 from 'p5';
+import { TileConnectionGame } from '../utils/TileConnectionGame'; // Import your TileConnectionGame class
 import { useMemo } from 'react';
 
 interface DrawingCanvasProps {
-  commands: CarCommands[];
+  commands: (TileCommands | ControlCommands)[];
   controlCommand: ControlCommands;
 }
 
@@ -19,7 +19,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, controlCommand 
   const memoizedControlCommand = useMemo(() => controlCommand, [controlCommand]);
 
   const sketch = (p: p5) => {
-    const carAnimation = new CarAnimation(p, memoizedCommands);
+    const tileConnectionGame = new TileConnectionGame(p, memoizedCommands);
 
     p.setup = () => {
       p.createCanvas(divRef.current?.clientWidth || 910, divRef.current?.clientHeight || 380);
@@ -27,13 +27,8 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, controlCommand 
 
     p.draw = () => {
       p.clear();
-      if (memoizedControlCommand.type === 'start') {
-        carAnimation.update();
-      }
-      if (memoizedControlCommand.type === 'reset') {
-        carAnimation.resetAnimation();
-      }
-      carAnimation.display();
+      tileConnectionGame.update(memoizedControlCommand.type === 'start');
+      tileConnectionGame.display();
     };
 
     p.windowResized = () => {
