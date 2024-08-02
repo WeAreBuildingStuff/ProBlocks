@@ -2,7 +2,7 @@ import p5 from 'p5';
 
 export class CarAnimation {
   private p: p5;
-  private commands: Command[];
+  private commands: CarCommands[];
   private x: number;
   private y: number;
   private angle: number;
@@ -10,7 +10,7 @@ export class CarAnimation {
   private distanceMoved: number;
   private angleTurned: number;
 
-  constructor(p: p5, commands: Command[]) {
+  constructor(p: p5, commands: CarCommands[]) {
     this.p = p;
     this.commands = commands;
     this.x = 200;
@@ -21,8 +21,8 @@ export class CarAnimation {
     this.angleTurned = 0;
   }
 
-  update(isButtonPressed: boolean) {
-    if (isButtonPressed && this.currentCommandIndex < this.commands.length) {
+  update() {
+    if (this.currentCommandIndex < this.commands.length) {
       const currentCommand = this.commands[this.currentCommandIndex];
 
       switch (currentCommand.type) {
@@ -81,5 +81,15 @@ export class CarAnimation {
     this.p.ellipse(-15, -15, 10, 10); // Wheel 3
     this.p.ellipse(15, -15, 10, 10); // Wheel 4
     this.p.pop();
+    console.log(this.x, this.y);
+  }
+
+  resetAnimation() {
+    this.x = 200;
+    this.y = 300;
+    this.angle = 0;
+    this.currentCommandIndex = 0;
+    this.distanceMoved = 0;
+    this.angleTurned = 0;
   }
 }
