@@ -5,8 +5,6 @@ import { useP5 } from '../hooks/useP5';
 import { CarAnimation } from '../utils/carAnimation';
 import p5 from 'p5';
 
-export type Command = 'forward' | 'backward' | 'turnLeft' | 'turnRight';
-
 interface DrawingCanvasProps {
   commands: Command[];
   isButtonPressed: boolean;
