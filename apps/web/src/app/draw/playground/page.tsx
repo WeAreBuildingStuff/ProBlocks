@@ -37,13 +37,11 @@ const CommandButton: React.FC<CommandButtonProps> = ({ label, onClick }) => (
 
 export default function Component() {
   const [commands, setCommands] = useState<Command[]>([]);
-  const [isButtonPressed, setIsButtonPressed] = useState<boolean>(false);
+  const [controlCommand, setControlCommand] = useState<ControlCommands>({ type: 'stop' });
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  // const [recordingComplete, setRecordingComplete] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
   const [textCommands, setTextCommands] = useState<Command[]>([]);
   const processedTranscripts = useRef<Set<string>>(new Set());
-
   // Command options available
   const commandOptions: Command['type'][] = ['forward', 'backward', 'turnLeft', 'turnRight'];
 
@@ -52,9 +50,9 @@ export default function Component() {
   };
 
   // Handle removing command from the list
-  const removeCommand = (index: number) => {
-    setCommands(commands.filter((_, i) => i !== index));
-  };
+  // const removeCommand = (index: number) => {
+  //   setCommands(commands.filter((_, i) => i !== index));
+  // };
 
   const recognitionRef = useRef<any>(null);
 
@@ -97,7 +95,6 @@ export default function Component() {
       startRecording();
     } else {
       stopRecording();
-      setIsButtonPressed(true);
     }
   };
 
@@ -135,6 +132,14 @@ export default function Component() {
 
   console.log('Transcript:', transcript);
   console.log('Text Commands:', textCommands);
+
+  const handlePlay = () => {
+    setControlCommand({ type: 'start' });
+  };
+
+  const handleReset = () => {
+    setControlCommand({ type: 'reset' });
+  };
 
   return (
     <div className='flex h-screen w-full'>
@@ -189,7 +194,7 @@ export default function Component() {
             <div className='bg-gray-100 rounded-md p-4 flex-1'>
               <h3 className='text-lg font-medium mb-2'>Code</h3>
               <div className='space-y-2'>
-                {commands.map((command, index) => (
+                {/* {commands.map((command, index) => (
                   <div
                     key={index}
                     className='bg-white border border-gray-300 rounded-md p-2 cursor-pointer'
@@ -197,7 +202,7 @@ export default function Component() {
                   >
                     {`${command.type} ${'distance' in command ? command.distance : command.degrees}`}
                   </div>
-                ))}
+                ))} */}
               </div>
             </div>
           </div>
@@ -207,11 +212,11 @@ export default function Component() {
         <div className='bg-background border-b border-muted p-4'>
           <div className='flex items-center justify-between'>
             <div className='space-x-2'>
-              <Button variant='ghost' onClick={() => setIsButtonPressed(true)}>
+              <Button variant='ghost' onClick={handlePlay}>
                 <PlayIcon className='w-5 h-5' />
                 <span className='sr-only'>Run</span>
               </Button>
-              <Button variant='ghost'>
+              <Button variant='ghost' onClick={handleReset}>
                 <CircleStopIcon className='w-5 h-5' />
                 <span className='sr-only'>Stop</span>
               </Button>
@@ -238,7 +243,15 @@ export default function Component() {
         </div>
         <div className='flex-1 p-4'>
           <div className='h-full w-full bg-background rounded-xl shadow-xl'>
-            <DrawingCanvas commands={textCommands} isButtonPressed={isButtonPressed} />
+            <DrawingCanvas
+              commands={[
+                { type: 'connect', start: 'A1', end: 'B2' },
+                { type: 'connect', start: 'B2', end: 'B6' },
+                { type: 'connect', start: 'A6', end: 'B6' },
+                { type: 'connect', start: 'C6', end: 'B6' }
+              ]}
+              controlCommand={controlCommand}
+            />
           </div>
         </div>
       </div>
