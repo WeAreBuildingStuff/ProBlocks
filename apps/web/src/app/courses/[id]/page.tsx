@@ -1,4 +1,4 @@
-import ActivityCard from '../../components/ActivityCard';
+import ActivityCard from '../../../components/ActivityCard';
 import { Separator } from '@repo/ui/src/components/separator';
 import React from 'react';
 

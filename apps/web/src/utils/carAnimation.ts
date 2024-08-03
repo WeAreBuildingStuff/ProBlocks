@@ -81,7 +81,6 @@ export class CarAnimation {
     this.p.ellipse(-15, -15, 10, 10); // Wheel 3
     this.p.ellipse(15, -15, 10, 10); // Wheel 4
     this.p.pop();
-    console.log(this.x, this.y);
   }
 
   resetAnimation() {
