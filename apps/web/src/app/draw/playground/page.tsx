@@ -17,6 +17,7 @@ import {
   PlayIcon
 } from '../../../components/sub-components/Icons';
 import getGeminiResponse from '../../../utils/getGeminiResponse';
+import parseCarCommands from '../../../utils/parseCarCommands';
 
 declare global {
   interface Window {
@@ -37,7 +38,7 @@ const CommandButton: React.FC<CommandButtonProps> = ({ label, onClick }) => (
 );
 
 export default function Component() {
-  const [commands, setCommands] = useState<Command[]>([]);
+  const [commands, setCommands] = useState<CarCommands[]>([]);
   const [controlCommand, setControlCommand] = useState<ControlCommands>({ type: 'stop' });
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
@@ -51,7 +52,7 @@ export default function Component() {
     'turnCounterClockwise'
   ];
 
-  const addCommand = (command: Command) => {
+  const addCommand = (command: CarCommands) => {
     setCommands([...commands, command]);
   };
 
@@ -91,10 +92,17 @@ export default function Component() {
   const stopRecording = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
-      getGeminiResponse(transcript);
+      generateCommands();
       // setRecordingComplete(true);
     }
   };
+
+  async function generateCommands() {
+    const rawCommands = await getGeminiResponse(transcript);
+    const commands = parseCarCommands(rawCommands);
+    console.log('Commands:', commands);
+    setCommands(commands);
+  }
 
   const handleToggleRecording = () => {
     setIsRecording(!isRecording);
@@ -255,20 +263,7 @@ export default function Component() {
         </div>
         <div className='flex-1 p-4'>
           <div className='h-full w-full bg-background rounded-xl shadow-xl'>
-            <DrawingCanvas
-              commands={[
-                { type: 'penDown' },
-                { type: 'forward', distance: 100 },
-                { type: 'turnClockwise', degrees: 90 },
-                { type: 'forward', distance: 100 },
-                { type: 'turnCounterClockwise', degrees: 90 },
-                { type: 'forward', distance: 100 },
-                { type: 'turnCounterClockwise', degrees: 70 },
-                { type: 'forward', distance: 100 },
-                { type: 'penUp' }
-              ]}
-              controlCommand={controlCommand}
-            />
+            <DrawingCanvas commands={commands} controlCommand={controlCommand} />
           </div>
         </div>
       </div>

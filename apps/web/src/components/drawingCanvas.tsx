@@ -3,11 +3,11 @@
 import React, { useRef } from 'react';
 import { useP5 } from '../hooks/useP5';
 import p5 from 'p5';
-import { BotDrawingGame } from '../utils/DrawingBotGame';
+import { CarAnimation } from '../utils/carAnimation';
 import { useMemo } from 'react';
 
 interface DrawingCanvasProps {
-  commands: DrawingBotCommands[];
+  commands: CarCommands[];
   controlCommand: ControlCommands;
 }
 
@@ -18,7 +18,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, controlCommand 
   const memoizedControlCommand = useMemo(() => controlCommand, [controlCommand]);
 
   const sketch = (p: p5) => {
-    const botDrawingGame = new BotDrawingGame(p, memoizedCommands);
+    const carAnimation = new CarAnimation(p, memoizedCommands);
 
     p.setup = () => {
       p.createCanvas(divRef.current?.clientWidth || 910, divRef.current?.clientHeight || 380);
@@ -26,13 +26,14 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, controlCommand 
     };
 
     p.draw = () => {
+      p.clear();
       if (memoizedControlCommand.type === 'start') {
-        botDrawingGame.update();
+        carAnimation.update();
       } else if (memoizedControlCommand.type === 'reset') {
-        botDrawingGame.resetAnimation();
+        carAnimation.resetAnimation();
       }
 
-      botDrawingGame.display();
+      carAnimation.display();
     };
 
     p.windowResized = () => {
