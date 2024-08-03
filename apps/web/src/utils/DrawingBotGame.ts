@@ -35,10 +35,10 @@ export class BotDrawingGame {
         case 'backward':
           this.moveBot(currentCommand.distance, -1);
           break;
-        case 'turnLeft':
+        case 'turnCounterClockwise':
           this.turnBot(currentCommand.degrees, -1);
           break;
-        case 'turnRight':
+        case 'turnClockwise':
           this.turnBot(currentCommand.degrees, 1);
           break;
         case 'penUp':

@@ -44,7 +44,12 @@ export default function Component() {
   const [textCommands, setTextCommands] = useState<Command[]>([]);
   const processedTranscripts = useRef<Set<string>>(new Set());
   // Command options available
-  const commandOptions: Command['type'][] = ['forward', 'backward', 'turnLeft', 'turnRight'];
+  const commandOptions: Command['type'][] = [
+    'forward',
+    'backward',
+    'turnClockwise',
+    'turnCounterClockwise'
+  ];
 
   const addCommand = (command: Command) => {
     setCommands([...commands, command]);
@@ -104,7 +109,12 @@ export default function Component() {
     if (transcript && !processedTranscripts.current.has(transcript)) {
       processedTranscripts.current.add(transcript);
       const words = transcript.split(' ');
-      const validCommands: Command['type'][] = ['forward', 'backward', 'turnLeft', 'turnRight'];
+      const validCommands: Command['type'][] = [
+        'forward',
+        'backward',
+        'turnClockwise',
+        'turnCounterClockwise'
+      ];
       const commands: Command[] = words
         .map((word) => {
           const [command, value] = word.split('-');
@@ -181,8 +191,8 @@ export default function Component() {
                             case 'backward':
                               addCommand({ type: command, distance: param });
                               break;
-                            case 'turnLeft':
-                            case 'turnRight':
+                            case 'turnClockwise':
+                            case 'turnCounterClockwise':
                               addCommand({ type: command, degrees: param });
                               break;
                           }
@@ -249,11 +259,11 @@ export default function Component() {
               commands={[
                 { type: 'penDown' },
                 { type: 'forward', distance: 100 },
-                { type: 'turnRight', degrees: 90 },
+                { type: 'turnClockwise', degrees: 90 },
                 { type: 'forward', distance: 100 },
-                { type: 'turnRight', degrees: 90 },
+                { type: 'turnCounterClockwise', degrees: 90 },
                 { type: 'forward', distance: 100 },
-                { type: 'turnRight', degrees: 70 },
+                { type: 'turnCounterClockwise', degrees: 70 },
                 { type: 'forward', distance: 100 },
                 { type: 'penUp' }
               ]}
