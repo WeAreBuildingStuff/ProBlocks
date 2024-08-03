@@ -46,7 +46,7 @@ export class CarAnimation {
             this.currentCommandIndex++;
           }
           break;
-        case 'turnLeft':
+        case 'turnCounterClockwise':
           if (this.angleTurned < currentCommand.degrees) {
             this.angle -= 1;
             this.angleTurned++;
@@ -55,7 +55,7 @@ export class CarAnimation {
             this.currentCommandIndex++;
           }
           break;
-        case 'turnRight':
+        case 'turnClockwise':
           if (this.angleTurned < currentCommand.degrees) {
             this.angle += 1;
             this.angleTurned++;

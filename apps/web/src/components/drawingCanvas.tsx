@@ -3,32 +3,36 @@
 import React, { useRef } from 'react';
 import { useP5 } from '../hooks/useP5';
 import p5 from 'p5';
-import { TileConnectionGame } from '../utils/TileConnectionGame'; // Import your TileConnectionGame class
+import { BotDrawingGame } from '../utils/DrawingBotGame';
 import { useMemo } from 'react';
 
 interface DrawingCanvasProps {
-  commands: (TileCommands | ControlCommands)[];
+  commands: DrawingBotCommands[];
   controlCommand: ControlCommands;
 }
 
 const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, controlCommand }) => {
   const divRef = useRef<HTMLDivElement>(null);
 
-  // Memoize commands and controlCommand
   const memoizedCommands = useMemo(() => commands, [commands]);
   const memoizedControlCommand = useMemo(() => controlCommand, [controlCommand]);
 
   const sketch = (p: p5) => {
-    const tileConnectionGame = new TileConnectionGame(p, memoizedCommands);
+    const botDrawingGame = new BotDrawingGame(p, memoizedCommands);
 
     p.setup = () => {
       p.createCanvas(divRef.current?.clientWidth || 910, divRef.current?.clientHeight || 380);
+      p.background(255);
     };
 
     p.draw = () => {
-      p.clear();
-      tileConnectionGame.update(memoizedControlCommand.type === 'start');
-      tileConnectionGame.display();
+      if (memoizedControlCommand.type === 'start') {
+        botDrawingGame.update();
+      } else if (memoizedControlCommand.type === 'reset') {
+        botDrawingGame.resetAnimation();
+      }
+
+      botDrawingGame.display();
     };
 
     p.windowResized = () => {

@@ -14,6 +14,7 @@ export default async function getGeminiResponse(message: string): Promise<string
     }
 
     const data = await response.json();
+    console.log(data.message);
     return data.message;
   } catch (error) {
     console.error('Error fetching response:', error);
