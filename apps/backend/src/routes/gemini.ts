@@ -1,28 +1,26 @@
-import { Express, Request, Response } from "express"
-import * as dotenv from "dotenv";
-import { generateResponse } from "../utils/gemini/response";
+import { Express, Request, Response } from 'express';
+import * as dotenv from 'dotenv';
+import { generateResponse } from '../utils/gemini/moveCommands';
 
-dotenv.config({ path: ".env" });
+dotenv.config({ path: '.env' });
 
 function geminiRoutes(app: Express) {
-  app.get('/api/gemini', async (req: Request, res: Response) => {
+  // app.get('/api/gemini', async (req: Request, res: Response) => {
 
-  
-    // res.status(200).json({ message: message});
-  });
+  //   // res.status(200).json({ message: message});
+  // });
 
-  app.post("/api/gemini/test", async (req: Request, res: Response) => {
+  app.post('/api/gemini/test', async (req: Request, res: Response) => {
     try {
       const { message } = req.body;
 
       const response = await generateResponse(message);
 
-      res.status(201).json( {message: response} );
+      res.status(201).json({ message: response });
     } catch {
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-  
 }
 
 export default geminiRoutes;

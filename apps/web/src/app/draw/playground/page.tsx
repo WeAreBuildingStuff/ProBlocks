@@ -16,6 +16,7 @@ import {
   CircleStopIcon,
   PlayIcon
 } from '../../../components/sub-components/Icons';
+import getGeminiResponse from '../../../utils/getGeminiResponse';
 
 declare global {
   interface Window {
@@ -85,6 +86,7 @@ export default function Component() {
   const stopRecording = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
+      getGeminiResponse(transcript);
       // setRecordingComplete(true);
     }
   };
