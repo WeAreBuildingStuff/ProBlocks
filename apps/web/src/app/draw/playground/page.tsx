@@ -81,16 +81,19 @@ export default function Component() {
         rawCommands = await getCarCommands(transcript);
         parsedCommands = parseCarCommands(rawCommands);
         setCommands(parsedCommands);
+        console.log(parsedCommands);
         break;
       case 'tile':
         rawCommands = await getTileCommands(transcript);
         parsedCommands = parseTileCommands(rawCommands);
         setCommands(parsedCommands);
+        console.log(parsedCommands);
         break;
       case 'bot':
         rawCommands = await getDrawBotCommands(transcript);
         parsedCommands = parseDrawingBotCommands(rawCommands);
         setCommands(parsedCommands);
+        console.log(parsedCommands);
         break;
       default:
         throw new Error(`Unsupported game type: ${gameType}`);
