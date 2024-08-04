@@ -1,6 +1,7 @@
 // Import p5 and the necessary hooks and components
 import p5 from 'p5';
 
+//TODO: Fix does not draw line - Arrow Indication of where its facing
 export class BotDrawingGame {
   private p: p5;
   private commands: DrawingBotCommands[];

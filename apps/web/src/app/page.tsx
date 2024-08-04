@@ -35,11 +35,11 @@ const Skeleton = () => (
 );
 const items = [
   {
-    title: 'Magic Voice Quests',
+    title: 'Draw',
     description:
       'Use your voice to command and control the digital world. Magic Voice Quests lets you solve puzzles, navigate mazes, and create interactive stories using voice commands. Engage in exciting challenges that enhance your programming skills through the power of speech.',
     header: <Skeleton />,
-    link: '/magic-voice-quests'
+    link: '/draw'
   },
   {
     title: 'Robot Block Quests',
