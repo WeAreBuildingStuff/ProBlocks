@@ -1,40 +1,71 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useP5 } from '../hooks/useP5';
 import p5 from 'p5';
-import { CarAnimation } from '../utils/carAnimation';
-import { useMemo } from 'react';
+import { CarAnimation } from '../utils/CarGame';
+import { TileConnectionGame } from '../utils/TileConnectionGame';
+import { DrawingBotGame } from '../utils/DrawingBotGame';
 
-interface DrawingCanvasProps {
-  commands: CarCommands[];
+type GameType = 'car' | 'tile' | 'bot';
+
+interface DrawingCanvasProps<T extends GameType> {
+  gameType: T;
+  commands: GameCommands[T];
+  todoCommands: GameCommands[T]; // Prop for ghost commands
   controlCommand: ControlCommands;
 }
-// Ask Again Merge Which Parts Here ? 
 
-const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, controlCommand }) => {
+function createGame(
+  p: p5,
+  gameType: GameType,
+  commands: GameCommands[GameType],
+  todoCommands: GameCommands[GameType]
+) {
+  switch (gameType) {
+    case 'car':
+      return new CarAnimation(p, commands as CarCommands[], todoCommands as CarCommands[]);
+    case 'tile':
+      return new TileConnectionGame(p, commands as TileCommands[], todoCommands as TileCommands[]);
+    case 'bot':
+      return new DrawingBotGame(
+        p,
+        commands as DrawingBotCommands[],
+        todoCommands as DrawingBotCommands[]
+      );
+  }
+}
+
+const DrawingCanvas = <T extends GameType>({
+  gameType,
+  commands,
+  todoCommands,
+  controlCommand
+}: DrawingCanvasProps<T>) => {
   const divRef = useRef<HTMLDivElement>(null);
 
   const memoizedCommands = useMemo(() => commands, [commands]);
+  const memoizedTodoCommands = useMemo(() => todoCommands, [todoCommands]); // Memoize todo commands
   const memoizedControlCommand = useMemo(() => controlCommand, [controlCommand]);
 
   const sketch = (p: p5) => {
-    const carAnimation = new CarAnimation(p, memoizedCommands);
+    let game: ReturnType<typeof createGame>;
 
     p.setup = () => {
       p.createCanvas(divRef.current?.clientWidth || 910, divRef.current?.clientHeight || 380);
       p.background(255);
+      game = createGame(p, gameType, memoizedCommands, memoizedTodoCommands); // Pass todo commands to createGame
     };
 
     p.draw = () => {
       p.clear();
       if (memoizedControlCommand.type === 'start') {
-        carAnimation.update();
+        game.update();
       } else if (memoizedControlCommand.type === 'reset') {
-        carAnimation.resetAnimation();
+        game.resetAnimation();
       }
 
-      carAnimation.display();
+      game.display();
     };
 
     p.windowResized = () => {
