@@ -5,7 +5,6 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 'use client';
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@repo/ui/src/components/button';
 import DrawingCanvas from '../../../components/drawingCanvas';
@@ -27,6 +26,37 @@ import parseTileCommands from '../../../utils/parseTileCommands';
 import parseDrawingBotCommands from '../../../utils/parseDrawingBotCommands';
 
 type GameType = 'car' | 'tile' | 'bot';
+
+// Mock commands for TODO
+const mockCarCommands: CarCommands[] = [
+  { type: 'forward', distance: 100 },
+  { type: 'turnClockwise', degrees: 90 },
+  { type: 'forward', distance: 50 },
+  { type: 'turnCounterClockwise', degrees: 45 },
+  { type: 'backward', distance: 20 }
+];
+
+const mockTileCommands: TileCommands[] = [
+  { type: 'connect', start: 'A1', end: 'B1' },
+  { type: 'connect', start: 'B1', end: 'C1' },
+  { type: 'connect', start: 'C1', end: 'C2' },
+  { type: 'connect', start: 'C2', end: 'D2' }
+];
+
+const mockDrawingBotCommands: DrawingBotCommands[] = [
+  { type: 'forward', distance: 100 },
+  { type: 'penDown' },
+  { type: 'turnClockwise', degrees: 90 },
+  { type: 'forward', distance: 50 },
+  { type: 'turnCounterClockwise', degrees: 45 },
+  { type: 'backward', distance: 20 },
+  { type: 'forward', distance: 100 },
+  { type: 'penUp' },
+  { type: 'turnClockwise', degrees: 90 },
+  { type: 'forward', distance: 50 },
+  { type: 'turnCounterClockwise', degrees: 45 },
+  { type: 'backward', distance: 20 }
+];
 
 export default function Component() {
   const [gameType, setGameType] = useState<GameType>('car');
@@ -117,6 +147,20 @@ export default function Component() {
     setControlCommand({ type: 'reset' });
   };
 
+  // Determine TODO commands based on game type
+  const todoCommands = () => {
+    switch (gameType) {
+      case 'car':
+        return mockCarCommands;
+      case 'tile':
+        return mockTileCommands;
+      case 'bot':
+        return mockDrawingBotCommands;
+      default:
+        return [];
+    }
+  };
+
   return (
     <div className='flex h-screen w-full'>
       <div className='flex flex-col bg-background text-foreground border-r border-muted p-4 gap-4 max-w-[300px] w-full'>
@@ -142,46 +186,18 @@ export default function Component() {
               <option value='bot'>Drawing Bot Game</option>
             </select>
           </div>
-          {/* Command buttons */}
-          {/* <div className='bg-gray-100 rounded-md p-4'>
-            <h3 className='text-lg font-medium mb-2'>Commands</h3>
-            <div className='grid grid-cols-2 gap-2'>
-              {commandOptions.map((command) => (
-                <CommandButton
-                  key={command}
-                  label={command}
-                  onClick={() => {
-                    const value = prompt(
-                      `Enter value for ${command} (distance for forward/backward, degrees for turn)`
-                    );
-                    if (value) {
-                      const param = parseInt(value, 10);
-                      if (!isNaN(param)) {
-                        switch (command) {
-                          case 'forward':
-                          case 'backward':
-                            addCommand({ type: command, distance: param });
-                            break;
-                          case 'turnClockwise':
-                          case 'turnCounterClockwise':
-                            addCommand({ type: command, degrees: param });
-                            break;
-                        }
-                      }
-                    }
-                  }}
-                />
-              ))}
-            </div>
-          </div> */}
           {/* Command list */}
           {/* <div className='bg-gray-100 rounded-md p-4 flex-1'>
-            <h3 className='text-lg font-medium mb-2'>Code</h3>
+            <h3 className='text-lg font-medium mb-2'>Commands</h3>
             <div className='space-y-2'>
               {commands.map((command, index) => (
                 <div key={index} className='bg-white border border-gray-300 rounded-md p-2'>
                   {`${command.type} ${
-                    'distance' in command ? command.distance : command.degrees
+                    'distance' in command ? command.distance : 
+                    'degrees' in command ? command.degrees :
+                    'startX' in command ? `from (${command.startX},${command.startY}) to (${command.endX},${command.endY})` :
+                    'centerX' in command ? `center (${command.centerX}, ${command.centerY}), radius ${command.radius}` :
+                    ''
                   }`}
                 </div>
               ))}
@@ -228,6 +244,7 @@ export default function Component() {
               gameType={gameType}
               commands={commands}
               controlCommand={controlCommand}
+              todoCommands={todoCommands()}
             />
           </div>
         </div>

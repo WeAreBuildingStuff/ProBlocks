@@ -1,9 +1,9 @@
 import p5 from 'p5';
 
-//TODO: Fix does not draw line - Arrow Indication of where its facing
 export class DrawingBotGame {
   private p: p5;
   private commands: DrawingBotCommands[];
+  private ghostCommands: DrawingBotCommands[];
   private x: number;
   private y: number;
   private angle: number;
@@ -11,13 +11,13 @@ export class DrawingBotGame {
   private currentCommandIndex: number;
   private distanceRemaining: number;
   private turnDegreesRemaining: number;
-
-  // Array to store lines drawn
   private lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  private ghostLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
 
-  constructor(p: p5, commands: DrawingBotCommands[]) {
+  constructor(p: p5, commands: DrawingBotCommands[], ghostCommands: DrawingBotCommands[] = []) {
     this.p = p;
     this.commands = commands;
+    this.ghostCommands = ghostCommands;
     this.x = 200;
     this.y = 300;
     this.angle = 0;
@@ -25,12 +25,12 @@ export class DrawingBotGame {
     this.currentCommandIndex = 0;
     this.distanceRemaining = 0;
     this.turnDegreesRemaining = 0;
+    this.calculateGhostPath(); // Initialize ghost path calculations
   }
 
   update() {
     if (this.currentCommandIndex < this.commands.length) {
       const currentCommand = this.commands[this.currentCommandIndex];
-      console.log(this.distanceRemaining);
 
       switch (currentCommand.type) {
         case 'forward':
@@ -43,7 +43,6 @@ export class DrawingBotGame {
           if (this.distanceRemaining <= 0) {
             this.distanceRemaining = currentCommand.distance;
           }
-          this.distanceRemaining = currentCommand.distance;
           this.moveBot(true); // True for backward direction
           break;
         case 'turnCounterClockwise':
@@ -73,6 +72,15 @@ export class DrawingBotGame {
   display() {
     this.p.clear(); // Clear the canvas each frame
 
+    // Draw ghost lines
+    this.p.strokeWeight(3);
+    this.p.stroke(0, 0, 0, 20); // Light red color with transparency
+    this.ghostLines.forEach((line) => {
+      this.p.line(line.x1, line.y1, line.x2, line.y2);
+    });
+
+    this.p.strokeWeight(5);
+
     // Redraw all stored lines
     this.p.stroke(0); // Set line color to black
     this.lines.forEach((line) => {
@@ -80,6 +88,7 @@ export class DrawingBotGame {
     });
 
     // Draw the bot
+    this.p.strokeWeight(2);
     this.p.push();
     this.p.translate(this.x, this.y);
     this.p.rotate(this.p.radians(this.angle));
@@ -102,33 +111,29 @@ export class DrawingBotGame {
     this.distanceRemaining = 0;
     this.turnDegreesRemaining = 0;
     this.lines = []; // Clear the stored lines
+    this.calculateGhostPath(); // Recalculate ghost lines
   }
 
   private moveBot(backward: boolean = false) {
     if (this.distanceRemaining > 0) {
-      // Calculate the step size based on the remaining distance
       const maxStep = Math.min(1, this.distanceRemaining);
       const direction = backward ? -1 : 1;
       const dx = this.p.cos(this.p.radians(this.angle)) * maxStep * direction;
       const dy = this.p.sin(this.p.radians(this.angle)) * maxStep * direction;
 
-      // Calculate the new position
       const newX = this.x + dx;
       const newY = this.y + dy;
 
       if (this.penDown) {
-        // Store the line to be redrawn in the display method
         this.lines.push({ x1: this.x, y1: this.y, x2: newX, y2: newY });
       }
 
-      // Update the bot's position
       this.x = newX;
       this.y = newY;
       this.distanceRemaining -= Math.abs(maxStep);
 
-      // Move to the next command if distance is fully covered
       if (this.distanceRemaining <= 0) {
-        this.distanceRemaining = 0; // Ensure it's zero
+        this.distanceRemaining = 0;
         this.currentCommandIndex++;
       }
     }
@@ -146,5 +151,48 @@ export class DrawingBotGame {
         this.currentCommandIndex++;
       }
     }
+  }
+
+  private calculateGhostPath() {
+    this.ghostLines = [];
+    let ghostX = 200;
+    let ghostY = 300;
+    let ghostAngle = 0;
+    let penDown = true;
+
+    this.ghostCommands.forEach((command) => {
+      switch (command.type) {
+        case 'forward':
+        case 'backward': {
+          const distance = command.distance;
+          const direction = command.type === 'backward' ? -1 : 1;
+          const dx = this.p.cos(this.p.radians(ghostAngle)) * distance * direction;
+          const dy = this.p.sin(this.p.radians(ghostAngle)) * distance * direction;
+
+          const newX = ghostX + dx;
+          const newY = ghostY + dy;
+
+          if (penDown) {
+            this.ghostLines.push({ x1: ghostX, y1: ghostY, x2: newX, y2: newY });
+          }
+
+          ghostX = newX;
+          ghostY = newY;
+          break;
+        }
+        case 'turnCounterClockwise':
+          ghostAngle -= command.degrees;
+          break;
+        case 'turnClockwise':
+          ghostAngle += command.degrees;
+          break;
+        case 'penUp':
+          penDown = false;
+          break;
+        case 'penDown':
+          penDown = true;
+          break;
+      }
+    });
   }
 }

@@ -5,18 +5,20 @@ export class TileConnectionGame {
   private commands: (TileCommands | ControlCommands)[];
   private connections: { start: string; end: string }[];
   private animatedConnections: { start: string; end: string; progress: number }[];
+  private ghostConnections: { start: string; end: string }[]; // New property for ghost connections
   private currentAnimationIndex: number;
 
-  constructor(p: p5, commands: (TileCommands | ControlCommands)[]) {
+  constructor(p: p5, commands: TileCommands[], toDoCommands: TileCommands[]) {
     this.p = p;
     this.commands = commands;
     this.connections = [];
     this.animatedConnections = [];
+    this.ghostConnections = []; // Initialize ghost connections
     this.currentAnimationIndex = 0;
+    this.processCommands(toDoCommands); // Initialize ghost connections in the constructor
   }
 
   update() {
-    this.processCommands(this.commands);
     this.updateAnimation();
   }
 
@@ -24,6 +26,7 @@ export class TileConnectionGame {
     this.p.background(255);
     this.drawGrid();
     this.drawConnections();
+    this.drawGhostConnections(); // Draw the ghost connections
   }
 
   resetAnimation() {
@@ -39,17 +42,12 @@ export class TileConnectionGame {
   }
 
   private processCommands(commands: (TileCommands | ControlCommands)[]) {
-    for (const command of commands) {
-      if (command.type === 'connect') {
-        this.animatedConnections.push({
-          start: command.start,
-          end: command.end,
-          progress: 0
-        });
-      } else if (command.type === 'reset') {
-        this.resetAnimation();
-      }
-    }
+    this.ghostConnections = commands
+      .filter((command): command is TileCommands => command.type === 'connect')
+      .map((command) => ({
+        start: command.start,
+        end: command.end
+      }));
   }
 
   private updateAnimation() {
@@ -94,6 +92,17 @@ export class TileConnectionGame {
     if (this.currentAnimationIndex < this.animatedConnections.length) {
       const currentConnection = this.animatedConnections[this.currentAnimationIndex];
       this.drawLine(currentConnection.start, currentConnection.end, currentConnection.progress);
+    }
+  }
+
+  private drawGhostConnections() {
+    this.p.strokeWeight(2);
+    this.p.stroke(0, 0, 0, 50); // Light blue color with transparency
+    this.p.strokeWeight(2);
+
+    // Draw all ghost connections
+    for (const connection of this.ghostConnections) {
+      this.drawLine(connection.start, connection.end, 1);
     }
   }
 
