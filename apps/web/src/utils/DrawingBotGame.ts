@@ -84,7 +84,12 @@ export class DrawingBotGame {
     this.p.translate(this.x, this.y);
     this.p.rotate(this.p.radians(this.angle));
     this.p.fill(0, 0, 255);
-    this.p.ellipse(0, 0, 10, 10); // Bot representation
+    this.p.ellipse(0, 0, 20, 20); // Bot representation (larger)
+
+    // Draw the arrow indicating direction
+    this.p.fill(255, 0, 0); // Red color for the arrow
+    this.p.noStroke();
+    this.p.triangle(30, 0, 15, 7.5, 15, -7.5); // Arrow representation (ahead of the bot)
     this.p.pop();
   }
 
