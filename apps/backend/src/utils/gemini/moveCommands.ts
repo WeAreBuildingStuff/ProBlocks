@@ -1,8 +1,6 @@
 import { googleAI } from '@genkit-ai/googleai';
 import { dotprompt, prompt } from '@genkit-ai/dotprompt';
 import { configureGenkit } from '@genkit-ai/core';
-// import { defineSchema } from '@genkit-ai/core';
-// import z from 'zod';
 
 import * as dotenv from 'dotenv';
 

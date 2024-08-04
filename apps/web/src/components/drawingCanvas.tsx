@@ -10,6 +10,7 @@ interface DrawingCanvasProps {
   commands: CarCommands[];
   controlCommand: ControlCommands;
 }
+// Ask Again Merge Which Parts Here ? 
 
 const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ commands, controlCommand }) => {
   const divRef = useRef<HTMLDivElement>(null);
