@@ -16,7 +16,7 @@ configureGenkit({
 });
 
 export async function getTileCommands(instruction: string) {
-  const newPrompt = await prompt('tile_command');
+  const newPrompt = await prompt('tile_commands');
 
   const result = await newPrompt.generate({
     input: {

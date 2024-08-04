@@ -15,6 +15,12 @@ type DrawingBotCommands =
   | { type: 'penDown' }
   | { type: 'penUp' };
 
+type GameCommands = {
+  car: CarCommands[];
+  tile: TileCommands[];
+  bot: DrawingBotCommands[];
+};
+
 // Control commands that are common to all games
 type ControlCommands = { type: 'start' } | { type: 'stop' } | { type: 'reset' };
 

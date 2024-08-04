@@ -5,8 +5,9 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 'use client';
-import { Button } from '@repo/ui/src/components/button';
+
 import React, { useEffect, useRef, useState } from 'react';
+import { Button } from '@repo/ui/src/components/button';
 import DrawingCanvas from '../../../components/drawingCanvas';
 import {
   ZoomInIcon,
@@ -16,56 +17,31 @@ import {
   CircleStopIcon,
   PlayIcon
 } from '../../../components/sub-components/Icons';
-import { getCarCommands } from '../../../utils/getGeminiResponse';
+import {
+  getCarCommands,
+  getTileCommands,
+  getDrawBotCommands
+} from '../../../utils/getGeminiResponse';
 import parseCarCommands from '../../../utils/parseCarCommands';
+import parseTileCommands from '../../../utils/parseTileCommands';
+import parseDrawingBotCommands from '../../../utils/parseDrawingBotCommands';
 
-declare global {
-  interface Window {
-    webkitSpeechRecognition: any;
-  }
-}
-
-// Individual Command Button Component
-interface CommandButtonProps {
-  label: Command['type'];
-  onClick: () => void;
-}
-
-const CommandButton: React.FC<CommandButtonProps> = ({ label, onClick }) => (
-  <button className='border border-gray-300 rounded-md p-2' onClick={onClick}>
-    {label}
-  </button>
-);
+type GameType = 'car' | 'tile' | 'bot';
 
 export default function Component() {
-  const [commands, setCommands] = useState<CarCommands[]>([]);
+  const [gameType, setGameType] = useState<GameType>('car');
+  const [commands, setCommands] = useState<CarCommands[] | TileCommands[] | DrawingBotCommands[]>(
+    []
+  );
   const [controlCommand, setControlCommand] = useState<ControlCommands>({ type: 'stop' });
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
-  const [textCommands, setTextCommands] = useState<Command[]>([]);
-  const processedTranscripts = useRef<Set<string>>(new Set());
-  // Command options available
-  const commandOptions: Command['type'][] = [
-    'forward',
-    'backward',
-    'turnClockwise',
-    'turnCounterClockwise'
-  ];
-
-  const addCommand = (command: CarCommands) => {
-    setCommands([...commands, command]);
-  };
-
-  // Handle removing command from the list
-  // const removeCommand = (index: number) => {
-  //   setCommands(commands.filter((_, i) => i !== index));
-  // };
 
   const recognitionRef = useRef<any>(null);
 
   const startRecording = () => {
     setIsRecording(true);
-    recognitionRef.current = new window.webkitSpeechRecognition();
+    recognitionRef.current = new (window as any).webkitSpeechRecognition();
     recognitionRef.current.continuous = true;
     recognitionRef.current.interimResults = true;
 
@@ -93,15 +69,32 @@ export default function Component() {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       generateCommands();
-      // setRecordingComplete(true);
     }
   };
 
   async function generateCommands() {
-    const rawCommands = await getCarCommands(transcript);
-    const commands = parseCarCommands(rawCommands);
-    console.log('Commands:', commands);
-    setCommands(commands);
+    let rawCommands: string;
+    let parsedCommands: CarCommands[] | TileCommands[] | DrawingBotCommands[];
+
+    switch (gameType) {
+      case 'car':
+        rawCommands = await getCarCommands(transcript);
+        parsedCommands = parseCarCommands(rawCommands);
+        setCommands(parsedCommands);
+        break;
+      case 'tile':
+        rawCommands = await getTileCommands(transcript);
+        parsedCommands = parseTileCommands(rawCommands);
+        setCommands(parsedCommands);
+        break;
+      case 'bot':
+        rawCommands = await getDrawBotCommands(transcript);
+        parsedCommands = parseDrawingBotCommands(rawCommands);
+        setCommands(parsedCommands);
+        break;
+      default:
+        throw new Error(`Unsupported game type: ${gameType}`);
+    }
   }
 
   const handleToggleRecording = () => {
@@ -112,46 +105,6 @@ export default function Component() {
       stopRecording();
     }
   };
-
-  useEffect(() => {
-    if (transcript && !processedTranscripts.current.has(transcript)) {
-      processedTranscripts.current.add(transcript);
-      const words = transcript.split(' ');
-      const validCommands: Command['type'][] = [
-        'forward',
-        'backward',
-        'turnClockwise',
-        'turnCounterClockwise'
-      ];
-      const commands: Command[] = words
-        .map((word) => {
-          const [command, value] = word.split('-');
-          if (validCommands.includes(command as Command['type'])) {
-            const param = parseInt(value, 10);
-            if (!isNaN(param)) {
-              switch (command) {
-                case 'forward':
-                case 'backward':
-                  return { type: command, distance: param };
-                case 'turnLeft':
-                case 'turnRight':
-                  return { type: command, degrees: param };
-              }
-            }
-          }
-          return null;
-        })
-        .filter(Boolean) as Command[];
-
-      if (commands.length > 0) {
-        setTextCommands((prevCommands) => [...prevCommands, ...commands]);
-        console.log('Commands added:', commands);
-      }
-    }
-  }, [transcript]);
-
-  console.log('Transcript:', transcript);
-  console.log('Text Commands:', textCommands);
 
   const handlePlay = () => {
     setControlCommand({ type: 'start' });
@@ -164,6 +117,7 @@ export default function Component() {
   return (
     <div className='flex h-screen w-full'>
       <div className='flex flex-col bg-background text-foreground border-r border-muted p-4 gap-4 max-w-[300px] w-full'>
+        {/* Sidebar content */}
         <div className='flex items-center justify-between'>
           <h2 className='text-lg font-semibold'>Coding Playground</h2>
           <Button variant='ghost' size='icon'>
@@ -172,60 +126,64 @@ export default function Component() {
           </Button>
         </div>
         <div className='flex flex-col space-y-4 overflow-auto hide-scrollbar'>
-          <div className='flex-1 space-y-4'>
-            <div className='bg-gray-100 rounded-md p-4'>
-              <h3 className='text-lg font-medium mb-2'>Hints</h3>
-              <p className='text-sm text-gray-500'>
-                Use the blocks below to build your program. Drag and drop the blocks to the canvas
-                on the right.
-              </p>
-            </div>
-            <div className='bg-gray-100 rounded-md p-4'>
-              <h3 className='text-lg font-medium mb-2'>Commands</h3>
-              <div className='grid grid-cols-2 gap-2'>
-                {commandOptions.map((command) => (
-                  <CommandButton
-                    key={command}
-                    label={command}
-                    onClick={() => {
-                      const value = prompt(
-                        `Enter value for ${command} (distance for forward/backward, degrees for turnLeft/turnRight)`
-                      );
-                      if (value) {
-                        const param = parseInt(value, 10);
-                        if (!isNaN(param)) {
-                          switch (command) {
-                            case 'forward':
-                            case 'backward':
-                              addCommand({ type: command, distance: param });
-                              break;
-                            case 'turnClockwise':
-                            case 'turnCounterClockwise':
-                              addCommand({ type: command, degrees: param });
-                              break;
-                          }
+          {/* Game type selection */}
+          <div className='bg-gray-100 rounded-md p-4'>
+            <h3 className='text-lg font-medium mb-2'>Game Type</h3>
+            <select
+              value={gameType}
+              onChange={(e) => setGameType(e.target.value as GameType)}
+              className='w-full p-2 border rounded'
+            >
+              <option value='car'>Car Game</option>
+              <option value='tile'>Tile Connection Game</option>
+              <option value='bot'>Drawing Bot Game</option>
+            </select>
+          </div>
+          {/* Command buttons */}
+          {/* <div className='bg-gray-100 rounded-md p-4'>
+            <h3 className='text-lg font-medium mb-2'>Commands</h3>
+            <div className='grid grid-cols-2 gap-2'>
+              {commandOptions.map((command) => (
+                <CommandButton
+                  key={command}
+                  label={command}
+                  onClick={() => {
+                    const value = prompt(
+                      `Enter value for ${command} (distance for forward/backward, degrees for turn)`
+                    );
+                    if (value) {
+                      const param = parseInt(value, 10);
+                      if (!isNaN(param)) {
+                        switch (command) {
+                          case 'forward':
+                          case 'backward':
+                            addCommand({ type: command, distance: param });
+                            break;
+                          case 'turnClockwise':
+                          case 'turnCounterClockwise':
+                            addCommand({ type: command, degrees: param });
+                            break;
                         }
                       }
-                    }}
-                  />
-                ))}
-              </div>
+                    }
+                  }}
+                />
+              ))}
             </div>
-            <div className='bg-gray-100 rounded-md p-4 flex-1'>
-              <h3 className='text-lg font-medium mb-2'>Code</h3>
-              <div className='space-y-2'>
-                {/* {commands.map((command, index) => (
-                  <div
-                    key={index}
-                    className='bg-white border border-gray-300 rounded-md p-2 cursor-pointer'
-                    onClick={() => removeCommand(index)}
-                  >
-                    {`${command.type} ${'distance' in command ? command.distance : command.degrees}`}
-                  </div>
-                ))} */}
-              </div>
+          </div> */}
+          {/* Command list */}
+          {/* <div className='bg-gray-100 rounded-md p-4 flex-1'>
+            <h3 className='text-lg font-medium mb-2'>Code</h3>
+            <div className='space-y-2'>
+              {commands.map((command, index) => (
+                <div key={index} className='bg-white border border-gray-300 rounded-md p-2'>
+                  {`${command.type} ${
+                    'distance' in command ? command.distance : command.degrees
+                  }`}
+                </div>
+              ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className='flex-1 bg-muted/40 flex flex-col'>
@@ -263,7 +221,11 @@ export default function Component() {
         </div>
         <div className='flex-1 p-4'>
           <div className='h-full w-full bg-background rounded-xl shadow-xl'>
-            <DrawingCanvas commands={commands} controlCommand={controlCommand} />
+            <DrawingCanvas<GameType>
+              gameType={gameType}
+              commands={commands}
+              controlCommand={controlCommand}
+            />
           </div>
         </div>
       </div>

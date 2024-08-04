@@ -2,7 +2,7 @@
 import p5 from 'p5';
 
 //TODO: Fix does not draw line - Arrow Indication of where its facing
-export class BotDrawingGame {
+export class DrawingBotGame {
   private p: p5;
   private commands: DrawingBotCommands[];
   private x: number;
