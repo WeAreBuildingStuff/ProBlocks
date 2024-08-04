@@ -1,6 +1,6 @@
 import { Express, Request, Response } from 'express';
 import * as dotenv from 'dotenv';
-import { generateResponse } from '../utils/gemini/moveCommands';
+import { getMoveCommands } from '../utils/gemini/getMoveCommands';
 
 dotenv.config({ path: '.env' });
 
@@ -14,7 +14,7 @@ function geminiRoutes(app: Express) {
     try {
       const { message } = req.body;
 
-      const response = await generateResponse(message);
+      const response = await getMoveCommands(message);
 
       res.status(201).json({ message: response });
     } catch {

@@ -1,7 +1,7 @@
 export default async function getGeminiResponse(message: string): Promise<string> {
   try {
     console.log('start');
-    const response = await fetch(`http://localhost:8080/api/gemini/test`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/gemini/test`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
