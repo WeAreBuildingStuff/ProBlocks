@@ -15,8 +15,8 @@ configureGenkit({
   enableTracingAndMetrics: true
 });
 
-export async function generateResponse(instruction: string) {
-  const newPrompt = await prompt('move_command');
+export async function getTileCommands(instruction: string) {
+  const newPrompt = await prompt('tile_command');
 
   const result = await newPrompt.generate({
     input: {
@@ -25,8 +25,6 @@ export async function generateResponse(instruction: string) {
   });
 
   const output = result.text();
-
-  console.log(output);
 
   return output;
 }

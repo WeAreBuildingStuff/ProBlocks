@@ -1,8 +1,6 @@
 import { googleAI } from '@genkit-ai/googleai';
 import { dotprompt, prompt } from '@genkit-ai/dotprompt';
 import { configureGenkit } from '@genkit-ai/core';
-// import { defineSchema } from '@genkit-ai/core';
-// import z from 'zod';
 
 import * as dotenv from 'dotenv';
 
@@ -17,8 +15,8 @@ configureGenkit({
   enableTracingAndMetrics: true
 });
 
-export async function getMoveCommands(instruction: string) {
-  const newPrompt = await prompt('move_command');
+export async function getDrawBotCommands(instruction: string) {
+  const newPrompt = await prompt('draw_bot_commands');
 
   const result = await newPrompt.generate({
     input: {
@@ -27,8 +25,6 @@ export async function getMoveCommands(instruction: string) {
   });
 
   const output = result.text();
-
-  console.log(output);
 
   return output;
 }
