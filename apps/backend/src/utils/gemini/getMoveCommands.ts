@@ -1,6 +1,8 @@
 import { googleAI } from '@genkit-ai/googleai';
 import { dotprompt, prompt } from '@genkit-ai/dotprompt';
 import { configureGenkit } from '@genkit-ai/core';
+// import { defineSchema } from '@genkit-ai/core';
+// import z from 'zod';
 
 import * as dotenv from 'dotenv';
 
@@ -15,7 +17,7 @@ configureGenkit({
   enableTracingAndMetrics: true
 });
 
-export async function generateResponse(instruction: string) {
+export async function getMoveCommands(instruction: string) {
   const newPrompt = await prompt('move_command');
 
   const result = await newPrompt.generate({

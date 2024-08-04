@@ -21,12 +21,6 @@ export default function Navbar() {
         </Link>
       </div>
 
-      <div className='flex gap-4 items-center'>
-        <Button className='rounded-full text-black bg-green-400 border-2 border-gray-500 hover:bg-green-500 hover:border-black'>
-          {' '}
-          Log in{' '}
-        </Button>
-      </div>
     </header>
   );
 }

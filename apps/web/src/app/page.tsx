@@ -1,9 +1,20 @@
+'use client';
 import { BentoGrid, BentoGridItem } from '@repo/ui/src/components/bento-grid';
 import React from 'react';
-
+import dynamic from 'next/dynamic';
 export default function Page(): JSX.Element {
+  const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
+
   return (
-    <main className='w-screen flex flex-1 flex-col h-full items-center bg-neutral-100 p-24'>
+    <main className='w-screen flex flex-1 flex-col gap-5 h-full items-center bg-neutral-100 p-24'>
+      <div className='w-full max-w-screen-lg h-fit'>
+        <ReactPlayer
+          url='<https://www.youtube.com/watch?v=ItPcGiStRYA>'
+          controls
+          width='100%'
+        />
+      </div>
+
       <BentoGrid className='mx-auto w-full'>
         {items.map((item, i) => (
           <BentoGridItem
@@ -24,11 +35,11 @@ const Skeleton = () => (
 );
 const items = [
   {
-    title: 'Magic Voice Quests',
+    title: 'Draw',
     description:
       'Use your voice to command and control the digital world. Magic Voice Quests lets you solve puzzles, navigate mazes, and create interactive stories using voice commands. Engage in exciting challenges that enhance your programming skills through the power of speech.',
     header: <Skeleton />,
-    link: '/magic-voice-quests'
+    link: '/draw'
   },
   {
     title: 'Robot Block Quests',

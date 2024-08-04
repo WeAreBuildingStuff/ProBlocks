@@ -16,7 +16,7 @@ import {
   CircleStopIcon,
   PlayIcon
 } from '../../../components/sub-components/Icons';
-import getGeminiResponse from '../../../utils/getGeminiResponse';
+import getMoveCommands from '../../../utils/getGeminiResponse';
 import parseCarCommands from '../../../utils/parseCarCommands';
 
 declare global {
@@ -98,7 +98,7 @@ export default function Component() {
   };
 
   async function generateCommands() {
-    const rawCommands = await getGeminiResponse(transcript);
+    const rawCommands = await getMoveCommands(transcript);
     const commands = parseCarCommands(rawCommands);
     console.log('Commands:', commands);
     setCommands(commands);

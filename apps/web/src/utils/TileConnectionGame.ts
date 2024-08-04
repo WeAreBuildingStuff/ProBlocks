@@ -15,10 +15,8 @@ export class TileConnectionGame {
     this.currentAnimationIndex = 0;
   }
 
-  update(isButtonPressed: boolean) {
-    if (isButtonPressed) {
-      this.processCommands(this.commands);
-    }
+  update() {
+    this.processCommands(this.commands);
     this.updateAnimation();
   }
 
@@ -26,6 +24,18 @@ export class TileConnectionGame {
     this.p.background(255);
     this.drawGrid();
     this.drawConnections();
+  }
+
+  resetAnimation() {
+    this.connections = [];
+    this.animatedConnections = this.commands
+      .filter((command): command is TileCommands => command.type === 'connect')
+      .map((command) => ({
+        start: command.start,
+        end: command.end,
+        progress: 0
+      }));
+    this.currentAnimationIndex = 0;
   }
 
   private processCommands(commands: (TileCommands | ControlCommands)[]) {
@@ -37,9 +47,7 @@ export class TileConnectionGame {
           progress: 0
         });
       } else if (command.type === 'reset') {
-        this.connections = [];
-        this.animatedConnections = [];
-        this.currentAnimationIndex = 0;
+        this.resetAnimation();
       }
     }
   }
@@ -74,7 +82,6 @@ export class TileConnectionGame {
   }
 
   private drawConnections() {
-    // const tileSize = 40;
     this.p.stroke(255, 0, 0);
     this.p.strokeWeight(4);
 
