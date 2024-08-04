@@ -10,7 +10,7 @@ function geminiRoutes(app: Express) {
   //   // res.status(200).json({ message: message});
   // });
 
-  app.post('/api/gemini/test', async (req: Request, res: Response) => {
+  app.post('/api/gemini/move-commands', async (req: Request, res: Response) => {
     try {
       const { message } = req.body;
 

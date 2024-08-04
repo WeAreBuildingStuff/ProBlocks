@@ -1,7 +1,6 @@
-export default async function getGeminiResponse(message: string): Promise<string> {
+export default async function getMoveCommands(message: string): Promise<string> {
   try {
-    console.log('start');
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/gemini/test`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/gemini/move-commands`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -14,7 +13,6 @@ export default async function getGeminiResponse(message: string): Promise<string
     }
 
     const data = await response.json();
-    console.log(data.message);
     return data.message;
   } catch (error) {
     console.error('Error fetching response:', error);
