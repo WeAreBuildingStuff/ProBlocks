@@ -1,65 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/oDkH1rcy0Ti
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@repo/ui/src/components/button';
-import DrawingCanvas from '../../../components/drawingCanvas';
+import DrawingCanvas from '../../../../../components/drawingCanvas';
 import {
   ZoomInIcon,
   ZoomOutIcon,
-  SettingsIcon,
   RecordIcon,
   CircleStopIcon,
   PlayIcon
-} from '../../../components/sub-components/Icons';
+} from '../../../../../components/sub-components/Icons';
 import {
   getCarCommands,
   getTileCommands,
   getDrawBotCommands
-} from '../../../utils/getGeminiResponse';
-import parseCarCommands from '../../../utils/parseCarCommands';
-import parseTileCommands from '../../../utils/parseTileCommands';
-import parseDrawingBotCommands from '../../../utils/parseDrawingBotCommands';
+} from '../../../../../utils/getGeminiResponse';
+import parseCarCommands from '../../../../../utils/parseCarCommands';
+import parseTileCommands from '../../../../../utils/parseTileCommands';
+import parseDrawingBotCommands from '../../../../../utils/parseDrawingBotCommands';
+import carGameLevels from '../../../../../constants/activties/carLevels';
+import tileGameLevels from '../../../../../constants/activties/tileConnectionLevels';
+import drawBotGameLevels from '../../../../../constants/activties/drawBotLevels';
 
 type GameType = 'car' | 'tile' | 'bot';
 
-// Mock commands for TODO
-const mockCarCommands: CarCommands[] = [
-  { type: 'forward', distance: 100 },
-  { type: 'turnClockwise', degrees: 90 },
-  { type: 'forward', distance: 50 },
-  { type: 'turnCounterClockwise', degrees: 45 },
-  { type: 'backward', distance: 20 }
-];
+interface ActivityProps {
+  params: {
+    level: string;
+    activity: string;
+  };
+}
 
-const mockTileCommands: TileCommands[] = [
-  { type: 'connect', start: 'A1', end: 'B1' },
-  { type: 'connect', start: 'B1', end: 'C1' },
-  { type: 'connect', start: 'C1', end: 'C2' },
-  { type: 'connect', start: 'C2', end: 'D2' }
-];
+export default function Activity({ params }: ActivityProps) {
+  // Determine initial game type based on activity parameter
+  const gameType: GameType = params.activity.startsWith('car')
+    ? 'car'
+    : params.activity.startsWith('tile')
+      ? 'tile'
+      : 'bot';
 
-const mockDrawingBotCommands: DrawingBotCommands[] = [
-  { type: 'forward', distance: 100 },
-  { type: 'penDown' },
-  { type: 'turnClockwise', degrees: 90 },
-  { type: 'forward', distance: 50 },
-  { type: 'turnCounterClockwise', degrees: 45 },
-  { type: 'backward', distance: 20 },
-  { type: 'forward', distance: 100 },
-  { type: 'penUp' },
-  { type: 'turnClockwise', degrees: 90 },
-  { type: 'forward', distance: 50 },
-  { type: 'turnCounterClockwise', degrees: 45 },
-  { type: 'backward', distance: 20 }
-];
-
-export default function Component() {
-  const [gameType, setGameType] = useState<GameType>('car');
   const [commands, setCommands] = useState<CarCommands[] | TileCommands[] | DrawingBotCommands[]>(
     []
   );
@@ -147,15 +126,15 @@ export default function Component() {
     setControlCommand({ type: 'reset' });
   };
 
-  // Determine TODO commands based on game type
   const todoCommands = () => {
+    const level = parseInt(params.level, 10);
     switch (gameType) {
       case 'car':
-        return mockCarCommands;
+        return carGameLevels[level];
       case 'tile':
-        return mockTileCommands;
+        return tileGameLevels[level];
       case 'bot':
-        return mockDrawingBotCommands;
+        return drawBotGameLevels[level];
       default:
         return [];
     }
@@ -163,48 +142,6 @@ export default function Component() {
 
   return (
     <div className='flex h-screen w-full'>
-      <div className='flex flex-col bg-background text-foreground border-r border-muted p-4 gap-4 max-w-[300px] w-full'>
-        {/* Sidebar content */}
-        <div className='flex items-center justify-between'>
-          <h2 className='text-lg font-semibold'>Coding Playground</h2>
-          <Button variant='ghost' size='icon'>
-            <SettingsIcon className='w-5 h-5' />
-            <span className='sr-only'>Settings</span>
-          </Button>
-        </div>
-        <div className='flex flex-col space-y-4 overflow-auto hide-scrollbar'>
-          {/* Game type selection */}
-          <div className='bg-gray-100 rounded-md p-4'>
-            <h3 className='text-lg font-medium mb-2'>Game Type</h3>
-            <select
-              value={gameType}
-              onChange={(e) => setGameType(e.target.value as GameType)}
-              className='w-full p-2 border rounded'
-            >
-              <option value='car'>Car Game</option>
-              <option value='tile'>Tile Connection Game</option>
-              <option value='bot'>Drawing Bot Game</option>
-            </select>
-          </div>
-          {/* Command list */}
-          {/* <div className='bg-gray-100 rounded-md p-4 flex-1'>
-            <h3 className='text-lg font-medium mb-2'>Commands</h3>
-            <div className='space-y-2'>
-              {commands.map((command, index) => (
-                <div key={index} className='bg-white border border-gray-300 rounded-md p-2'>
-                  {`${command.type} ${
-                    'distance' in command ? command.distance : 
-                    'degrees' in command ? command.degrees :
-                    'startX' in command ? `from (${command.startX},${command.startY}) to (${command.endX},${command.endY})` :
-                    'centerX' in command ? `center (${command.centerX}, ${command.centerY}), radius ${command.radius}` :
-                    ''
-                  }`}
-                </div>
-              ))}
-            </div>
-          </div> */}
-        </div>
-      </div>
       <div className='flex-1 bg-muted/40 flex flex-col'>
         <div className='bg-background border-b border-muted p-4'>
           <div className='flex items-center justify-between'>
