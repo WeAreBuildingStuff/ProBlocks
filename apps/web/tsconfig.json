@@ -18,10 +18,13 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "__test__/**/*.ts",
+    "__test__/**/*.tsx",
     ".next/types/**/*.ts",
-    ".eslintrc.js" // Include ESLint config file
+    "./.eslintrc.js",
+    "./project.d.ts"
   ],
   "exclude": ["node_modules"]
 }

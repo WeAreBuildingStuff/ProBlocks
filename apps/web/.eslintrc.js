@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    node: true // This tells ESLint that the code is running in a Node.js environment
+    node: true
   },
   extends: [
     'eslint:recommended',
@@ -9,7 +9,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './apps/web/tsconfig.json'
+    project: './tsconfig.json'
   },
   plugins: ['react', '@typescript-eslint'],
   settings: {
@@ -19,10 +19,10 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['src/**/*.{ts,tsx}', '__test__/**/*.{ts,tsx}'],
       extends: ['plugin:@typescript-eslint/recommended'],
       parserOptions: {
-        project: './apps/web/tsconfig.json'
+        project: './tsconfig.json'
       }
     }
   ]
