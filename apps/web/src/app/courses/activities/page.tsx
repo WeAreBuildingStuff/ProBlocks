@@ -18,7 +18,10 @@ export default function Page(): JSX.Element {
           <div className=' flex h-[600px] gap-3 '>
             <div className='flex flex-col space-y-4 px-5 py-3 w-[40%]'>
               {[1, 2, 3].map((value, index) => (
-                <div className='w-full h-full bg-gray-200  px-5 py-2  flex flex-col rounded-md'>
+                <div
+                  key={index}
+                  className='w-full h-full bg-gray-200  px-5 py-2  flex flex-col rounded-md'
+                >
                   <h1 className='font-bold'>Header</h1> <p>paragraph</p>
                 </div>
               ))}
