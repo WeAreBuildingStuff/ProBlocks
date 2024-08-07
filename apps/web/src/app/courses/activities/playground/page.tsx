@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
+import dynamic from 'next/dynamic';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@repo/ui/src/components/button';
-import DrawingCanvas from '../../../../components/drawingCanvas';
 import {
   ZoomInIcon,
   ZoomOutIcon,
@@ -21,6 +21,10 @@ import parseTileCommands from '../../../../utils/parseTileCommands';
 import parseDrawingBotCommands from '../../../../utils/parseDrawingBotCommands';
 
 type GameType = 'car' | 'tile' | 'bot';
+
+const DynamicDrawingCanvas = dynamic(() => import('../../../../components/drawingCanvas'), {
+  ssr: false
+});
 
 // Mock commands for TODO
 const mockCarCommands: CarCommands[] = [
@@ -59,27 +63,52 @@ export default function Component() {
     []
   );
   const [controlCommand, setControlCommand] = useState<ControlCommands>({ type: 'stop' });
-  const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [isListening, setIsListening] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
 
   const recognitionRef = useRef<any>(null);
 
-  const startRecording = () => {
-    setIsRecording(true);
-    recognitionRef.current = new (window as any).webkitSpeechRecognition();
-    recognitionRef.current.continuous = true;
-    recognitionRef.current.interimResults = true;
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
+      const speechRecognition = new (window as any).webkitSpeechRecognition() as SpeechRecognition;
+      speechRecognition.continuous = true;
+      speechRecognition.interimResults = false;
+      speechRecognition.lang = 'en-US';
 
-    recognitionRef.current.onresult = (event: any) => {
-      const newTranscript = event.results[event.results.length - 1][0].transcript
-        .trim()
-        .toLowerCase()
-        .replace(/[.]/g, '');
-      console.log('New transcript:', newTranscript);
-      setTranscript(newTranscript);
-    };
+      speechRecognition.onstart = () => {
+        setIsListening(true);
+      };
 
-    recognitionRef.current.start();
+      speechRecognition.onend = () => {
+        setIsListening(false);
+      };
+
+      speechRecognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error('Speech recognition error', event);
+        setIsListening(false);
+      };
+
+      speechRecognition.onresult = (event: SpeechRecognitionEvent) => {
+        const result = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+        console.log('You said: ', result);
+        setTranscript(result);
+      };
+
+      recognitionRef.current = speechRecognition;
+    } else {
+      console.warn('Web Speech API is not supported in this browser.');
+    }
+  }, []);
+
+  const toggleListening = () => {
+    if (recognitionRef.current) {
+      if (isListening) {
+        recognitionRef.current.stop();
+        generateCommands();
+      } else {
+        recognitionRef.current.start();
+      }
+    }
   };
 
   useEffect(() => {
@@ -89,13 +118,6 @@ export default function Component() {
       }
     };
   }, []);
-
-  const stopRecording = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      generateCommands();
-    }
-  };
 
   async function generateCommands() {
     let rawCommands: string;
@@ -124,15 +146,6 @@ export default function Component() {
         throw new Error(`Unsupported game type: ${gameType}`);
     }
   }
-
-  const handleToggleRecording = () => {
-    setIsRecording(!isRecording);
-    if (!isRecording) {
-      startRecording();
-    } else {
-      stopRecording();
-    }
-  };
 
   const handlePlay = () => {
     setControlCommand({ type: 'start' });
@@ -214,8 +227,8 @@ export default function Component() {
               </Button>
               <Button
                 variant='ghost'
-                onClick={handleToggleRecording}
-                className={isRecording ? 'text-red-500 gap-2' : 'gap-2'}
+                onClick={toggleListening}
+                className={isListening ? 'text-red-500 gap-2' : 'gap-2'}
               >
                 <RecordIcon className='w-5 h-5' />
                 <span className=''>Record</span>
@@ -235,7 +248,7 @@ export default function Component() {
         </div>
         <div className='flex-1 p-4'>
           <div className='h-full w-full bg-background rounded-xl shadow-xl'>
-            <DrawingCanvas<GameType>
+            <DynamicDrawingCanvas
               gameType={gameType}
               commands={commands}
               controlCommand={controlCommand}

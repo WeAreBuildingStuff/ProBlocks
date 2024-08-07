@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 // import { useRouter, useParams } from 'next/navigation'
-import { Button } from '@repo/ui/src/components/button';
 import React from 'react';
 
 export default function Navbar() {
@@ -20,7 +19,6 @@ export default function Navbar() {
           <h3 className='font-bold text-xl mr-8'> ProBlocks </h3>
         </Link>
       </div>
-
     </header>
   );
 }
